@@ -1,0 +1,43 @@
+# Compilazioni e file locali di Visual Studio/.NET.
+**/[Bb]in/
+**/[Oo]bj/
+.vs/
+.idea/
+*.user
+*.suo
+*.pubxml.user
+*.log
+
+# L'eseguibile si distribuisce tramite le release, non nella storia Git.
+/RonCUT.exe
+/VERIFICHE.txt
+
+# Impostazioni, credenziali e appunti privati del PC di sviluppo.
+/Impostazioni-da-trasferire/
+/PASSAGGIO-CODEX.md
+/NOTE-RonCUT.md
+/AGENTS.md
+.env
+.env.*
+!.env.example
+*.pfx
+*.p12
+*.pem
+*.key
+
+# Originali: includere soltanto le risorse e i casi necessari ai test.
+/data/*
+!/data/test.svg
+!/data/cerbiatto_cnc.svg
+!/data/RonCUT-icona-originale.png
+
+# Schermate storiche e G-code di riferimento restano sul PC.
+/Esempi/*.png
+/Esempi/*.nc
+
+# File temporanei del sistema e degli editor.
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.tmp
+*~

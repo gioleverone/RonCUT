@@ -1,0 +1,96 @@
+<Window x:Class="RonCUT.CutWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="RonCUT 1.5.2 — CUT" Width="1500" Height="940" MinWidth="1100" MinHeight="720" WindowStartupLocation="CenterOwner" Background="#F1F4F8" FontFamily="Segoe UI" Icon="Assets/RonCUT.ico" Loaded="Window_Loaded" Closing="Window_Closing" Deactivated="Window_Deactivated" PreviewLostKeyboardFocus="Window_LostKeyboardFocus">
+ <Window.Resources>
+  <Style x:Key="Card" TargetType="Border"><Setter Property="Background" Value="White"/><Setter Property="BorderBrush" Value="#DBE4ED"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="12"/><Setter Property="Margin" Value="0,0,0,10"/></Style>
+  <Style x:Key="Jog" TargetType="Button"><Setter Property="Width" Value="65"/><Setter Property="Height" Value="53"/><Setter Property="FontSize" Value="20"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Margin" Value="3"/></Style>
+  <Style x:Key="JogProfile" TargetType="RadioButton">
+   <Setter Property="Foreground" Value="#455B71"/>
+   <Setter Property="Background" Value="#F6F9FC"/>
+   <Setter Property="BorderBrush" Value="#C9D7E4"/>
+   <Setter Property="Height" Value="44"/>
+   <Setter Property="FontWeight" Value="SemiBold"/>
+   <Setter Property="Template">
+    <Setter.Value>
+     <ControlTemplate TargetType="RadioButton">
+      <Border x:Name="ProfileSurface" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="6">
+       <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+      </Border>
+      <ControlTemplate.Triggers>
+       <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Background" Value="#EBF3FC"/>
+       </Trigger>
+       <Trigger Property="IsChecked" Value="True">
+        <Setter Property="Background" Value="#DBEDFF"/>
+        <Setter Property="Foreground" Value="#194C7F"/>
+        <Setter Property="BorderBrush" Value="#276DA9"/>
+        <Setter TargetName="ProfileSurface" Property="BorderThickness" Value="2"/>
+       </Trigger>
+       <Trigger Property="IsEnabled" Value="False">
+        <Setter TargetName="ProfileSurface" Property="Opacity" Value="0.62"/>
+       </Trigger>
+      </ControlTemplate.Triggers>
+     </ControlTemplate>
+    </Setter.Value>
+   </Setter>
+  </Style>
+  <Style x:Key="Action" TargetType="Button"><Setter Property="Height" Value="56"/><Setter Property="FontSize" Value="18"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Foreground" Value="White"/><Setter Property="Margin" Value="0,4"/></Style>
+ </Window.Resources>
+ <Grid><Grid.RowDefinitions><RowDefinition Height="60"/><RowDefinition Height="*"/><RowDefinition Height="32"/></Grid.RowDefinitions>
+  <Border Background="White" BorderBrush="#DBE4ED" BorderThickness="0,0,0,1"><DockPanel Margin="16,0"><Button DockPanel.Dock="Right" Content="◀  TORNA A DESIGN" FontSize="15" FontWeight="Bold" Padding="15,0" Margin="10,8,0,8" Click="Design_Click"/><TextBlock DockPanel.Dock="Right" x:Name="ConnectionLabel" Text="NON CONNESSA" FontSize="16" FontWeight="Bold" Foreground="#A96019" VerticalAlignment="Center" Margin="0,0,16,0"/><StackPanel Orientation="Horizontal" VerticalAlignment="Center"><Border Background="#1D70BE" CornerRadius="5" Width="32" Height="32" Margin="0,0,9,0"><TextBlock Text="R" Foreground="White" FontSize="19" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="RonCUT  /  CUT" FontSize="23" FontWeight="Bold"/></StackPanel></DockPanel></Border>
+  <Grid Grid.Row="1" Margin="12"><Grid.ColumnDefinitions><ColumnDefinition Width="270"/><ColumnDefinition Width="*"/><ColumnDefinition Width="285"/></Grid.ColumnDefinitions>
+   <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,0,10,0"><StackPanel>
+    <Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="COLLEGAMENTO" FontWeight="Bold" Foreground="#788BA0"/><TextBlock x:Name="PortLabel" Text="Porta non configurata" Margin="0,7" TextWrapping="Wrap"/><Button x:Name="SetupButton" Content="⚙  Impostazioni CNC..." Height="38" Click="Setup_Click"/><Button x:Name="SimulateButton" Content="Avvia simulatore" Height="42" FontWeight="Bold" Margin="0,7,0,0" Click="Simulate_Click"/></StackPanel></Border>
+    <Border Style="{StaticResource Card}"><StackPanel x:Name="ManualControls"><TextBlock Text="MOVIMENTO MANUALE" FontWeight="Bold" Foreground="#788BA0"/>
+     <UniformGrid x:Name="JogProfileButtons" Columns="2" Margin="0,8,0,0">
+      <RadioButton x:Name="SlowJogButton" Style="{StaticResource JogProfile}" GroupName="JogSpeed" Tag="Slow" Click="JogProfile_Click" AutomationProperties.Name="Slow" Margin="0,0,4,0">
+       <StackPanel Orientation="Horizontal">
+        <Viewbox Width="27" Height="27" Margin="0,0,7,0">
+         <Canvas Width="28" Height="28">
+          <Path Fill="#197F74" Data="M3,18 C4,11 8,8 13,8 C18,8 20,11 21,15 L23,13 C27,12 29,17 25,19 L21,20 L20,23 C19,25 16,24 16,22 L16,20 L9,20 L8,23 C7,25 4,24 5,22 L5,20 L2,20 C1,19 1,18 3,18 Z"/>
+          <Path Stroke="#C9EFE3" StrokeThickness="1.2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Data="M6,17 L18,17 M10,17 L11,13 L15,13 L16,17"/>
+          <Ellipse Canvas.Left="24" Canvas.Top="15" Width="1.5" Height="1.5" Fill="White"/>
+         </Canvas>
+        </Viewbox>
+        <TextBlock Text="Slow" VerticalAlignment="Center"/>
+       </StackPanel>
+      </RadioButton>
+      <RadioButton x:Name="FastJogButton" Style="{StaticResource JogProfile}" GroupName="JogSpeed" Tag="Fast" Click="JogProfile_Click" AutomationProperties.Name="Fast" Margin="4,0,0,0">
+       <StackPanel Orientation="Horizontal">
+        <Viewbox Width="27" Height="27" Margin="0,0,7,0">
+         <Canvas Width="28" Height="28">
+          <Path Fill="#965322" Data="M4,18 C0,18 1,22 5,22 C7,25 11,24 15,23 L22,24 C25,24 25,22 22,21 L18,20 L19,17 C23,18 27,16 27,14 C26,12 23,11 20,11 L17,4 C15,0 12,1 13,5 L15,10 L11,5 C8,2 6,4 9,8 L13,13 C8,12 5,14 4,18 Z"/>
+          <Ellipse Canvas.Left="21" Canvas.Top="12.5" Width="1.75" Height="1.75" Fill="White"/>
+         </Canvas>
+        </Viewbox>
+        <TextBlock Text="Fast" VerticalAlignment="Center"/>
+       </StackPanel>
+      </RadioButton>
+     </UniformGrid>
+    <UniformGrid Columns="3" HorizontalAlignment="Center" Margin="0,10,0,0"><TextBlock/><Button Style="{StaticResource Jog}" Content="Y+" Tag="Y+" Click="Jog_Click" PreviewMouseLeftButtonDown="Jog_MouseDown" PreviewMouseLeftButtonUp="Jog_MouseUp" LostMouseCapture="Jog_LostMouseCapture"/><Button Style="{StaticResource Jog}" Content="Z+" Tag="Z+" Click="Jog_Click" PreviewMouseLeftButtonDown="Jog_MouseDown" PreviewMouseLeftButtonUp="Jog_MouseUp" LostMouseCapture="Jog_LostMouseCapture"/><Button Style="{StaticResource Jog}" Content="X−" Tag="X-" Click="Jog_Click" PreviewMouseLeftButtonDown="Jog_MouseDown" PreviewMouseLeftButtonUp="Jog_MouseUp" LostMouseCapture="Jog_LostMouseCapture"/><Button x:Name="JogStopButton" Content="STOP" Width="65" Height="53" FontSize="14" FontWeight="Bold" Margin="3" Background="#C63A3A" Foreground="White" ToolTip="Ferma il movimento manuale e annulla la coda (5 del tastierino)" Click="JogStop_Click"/><Button Style="{StaticResource Jog}" Content="X+" Tag="X+" Click="Jog_Click" PreviewMouseLeftButtonDown="Jog_MouseDown" PreviewMouseLeftButtonUp="Jog_MouseUp" LostMouseCapture="Jog_LostMouseCapture"/><TextBlock/><Button Style="{StaticResource Jog}" Content="Y−" Tag="Y-" Click="Jog_Click" PreviewMouseLeftButtonDown="Jog_MouseDown" PreviewMouseLeftButtonUp="Jog_MouseUp" LostMouseCapture="Jog_LostMouseCapture"/><Button Style="{StaticResource Jog}" Content="Z−" Tag="Z-" Click="Jog_Click" PreviewMouseLeftButtonDown="Jog_MouseDown" PreviewMouseLeftButtonUp="Jog_MouseUp" LostMouseCapture="Jog_LostMouseCapture"/></UniformGrid><TextBlock Text="Tastierino: 4/6 X · 8/2 Y · 9/3 Z · 5 STOP. Clic breve: passo. Tieni premuto: continuo." TextWrapping="Wrap" Foreground="#708092" Margin="0,8,0,0" FontSize="11"/></StackPanel></Border>
+    <Border Style="{StaticResource Card}"><StackPanel x:Name="ZeroControls"><TextBlock Text="ZERO PEZZO" FontWeight="Bold" Foreground="#788BA0"/><Button Height="48" Margin="0,8,0,0" Click="ZeroXY_Click"><StackPanel Orientation="Horizontal"><Image Source="Assets/axis_zero.png" Width="34" Height="34" Margin="0,0,12,0"/><TextBlock Text="AZZERA XY" FontWeight="Bold" FontSize="15" VerticalAlignment="Center"/></StackPanel></Button><Button Height="48" Margin="0,6,0,0" Click="ZeroZ_Click"><StackPanel Orientation="Horizontal"><Image Source="Assets/zero_z.png" Width="34" Height="34" Margin="0,0,12,0"/><TextBlock Text="AZZERA Z" FontWeight="Bold" FontSize="15" VerticalAlignment="Center"/></StackPanel></Button></StackPanel></Border>
+   </StackPanel></ScrollViewer>
+   <Grid Grid.Column="1" Margin="0,0,10,0"><Grid.RowDefinitions><RowDefinition Height="47"/><RowDefinition Height="*"/><RowDefinition Height="44"/></Grid.RowDefinitions><Border Background="White" BorderBrush="#DBE4ED" BorderThickness="1" CornerRadius="8,8,0,0"><DockPanel Margin="12,4"><StackPanel DockPanel.Dock="Right" Orientation="Horizontal"><Button Content="Sopra" Padding="10,2" Margin="3" Tag="top" Click="View_Click"/><Button Content="Assonometria" Padding="10,2" Margin="3" Tag="iso" Click="View_Click"/></StackPanel><TextBlock Text="PERCORSO 3D" FontWeight="Bold" VerticalAlignment="Center"/></DockPanel></Border><Border Grid.Row="1" Background="#FBFDFE" BorderBrush="#DBE4ED" BorderThickness="1,0,1,0" ClipToBounds="True"><Grid>
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+    <Border x:Name="ToolChangePanel" Visibility="Collapsed" Background="#FFF5DB" BorderBrush="#D09429" BorderThickness="1" CornerRadius="8" Margin="12" Padding="20">
+     <StackPanel>
+      <TextBlock Text="Pausa cambio utensile" FontSize="30" FontWeight="Bold" Foreground="#55370A" TextWrapping="Wrap"/>
+      <TextBlock x:Name="ToolChangeNext" FontSize="20" FontWeight="SemiBold" Foreground="#55370A" Margin="0,6,0,0" TextWrapping="Wrap"/>
+      <TextBlock Text="Verifica che il mandrino sia fermo. Usa i comandi manuali per posizionarlo. Lo zero XY resta sul pezzo." FontSize="15" Margin="0,10,0,0" TextWrapping="Wrap"/>
+      <TextBlock x:Name="ToolChangeStatus" FontSize="15" Margin="0,6,0,12" TextWrapping="Wrap"/>
+      <WrapPanel>
+       <Button x:Name="ToolChangeZeroZButton" Content="Azzera Z nuova fresa" FontWeight="SemiBold" FontSize="16" Padding="14,8" MinHeight="44" Margin="0,0,8,8" Click="ToolChangeZeroZ_Click"/>
+       <Button x:Name="ResumeAfterToolChangeButton" Content="Riprendi dopo la pausa" FontWeight="Bold" FontSize="18" Padding="16,8" MinHeight="44" Margin="0,0,0,8" Background="#168563" Foreground="White" Click="ResumeAfterToolChange_Click"/>
+      </WrapPanel>
+     </StackPanel>
+    </Border>
+    <Grid Grid.Row="1" x:Name="PreviewHost" Focusable="True" KeyboardNavigation.IsTabStop="False" FocusVisualStyle="{x:Null}"/>
+   </Grid></Border><Border Grid.Row="2" Background="White" BorderBrush="#DBE4ED" BorderThickness="1" CornerRadius="0,0,8,8"><TextBlock Text="Trascina per ruotare  ·  Rotella: zoom  ·  Blu: lavoro  ·  Grigio: rapidi" Margin="12,0" VerticalAlignment="Center" Foreground="#708092"/></Border></Grid>
+   <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto"><StackPanel>
+    <Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="POSIZIONE SUL PEZZO" FontWeight="Bold" Foreground="#788BA0"/><TextBlock x:Name="PositionLabel" Text="X  —    Y  —    Z  —" FontFamily="Consolas" FontWeight="Bold" FontSize="18" Margin="0,8,0,0"/><TextBlock x:Name="MotionLabel" Text="CNC non connessa" Foreground="#788BA0" Margin="0,5,0,0" TextWrapping="Wrap"/></StackPanel></Border>
+    <Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="LAVORAZIONE" FontWeight="Bold" Foreground="#788BA0"/><Button x:Name="StartButton" Content="▶   START" Style="{StaticResource Action}" Background="#168563" Margin="0,10,0,4" Click="Start_Click"/><Button x:Name="PauseButton" Content="Ⅱ   PAUSA" Style="{StaticResource Action}" Background="#C88816" Click="Pause_Click"/><Button x:Name="StopButton" Content="■   STOP" Style="{StaticResource Action}" Background="#C63A3A" Click="Stop_Click"/><Button x:Name="UnlockButton" Content="Sblocca allarme ($X)" Height="36" Margin="0,5,0,0" Click="Unlock_Click"/><TextBlock x:Name="EstimateLabel" Text="Tempo stimato: —" FontWeight="SemiBold" FontSize="15" Margin="0,12,0,0"/><TextBlock Text="Stima indicativa; non include tutte le accelerazioni." TextWrapping="Wrap" Foreground="#788BA0" FontSize="11" Margin="0,3,0,0"/></StackPanel></Border>
+    <Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="REGOLAZIONI IN TEMPO REALE" FontWeight="Bold" Foreground="#788BA0" TextWrapping="Wrap"/><TextBlock x:Name="FeedLabel" Text="Avanzamento 100%" FontWeight="SemiBold" Margin="0,12,0,0"/><Slider x:Name="FeedSlider" Minimum="10" Maximum="200" Value="100" IsSnapToTickEnabled="True" TickFrequency="1" ValueChanged="Feed_Changed"/><TextBlock Text="Influisce anche sulle discese Z." Foreground="#788BA0" FontSize="11"/><Separator Margin="0,12"/><TextBlock x:Name="SpindleLabel" Text="Mandrino 100%" FontWeight="SemiBold"/><Slider x:Name="SpindleSlider" Minimum="10" Maximum="200" Value="100" IsSnapToTickEnabled="True" TickFrequency="1" ValueChanged="Spindle_Changed"/></StackPanel></Border>
+    <Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="NOTIFICHE" FontWeight="Bold" Foreground="#788BA0"/><TextBlock x:Name="NotificationText" Text="URL configurabili nelle Impostazioni generali di DESIGN." Margin="0,8,0,0" TextWrapping="Wrap" Foreground="#677A90"/></StackPanel></Border>
+   </StackPanel></ScrollViewer>
+  </Grid>
+  <Border Grid.Row="2" Background="White" BorderBrush="#DBE4ED" BorderThickness="0,1,0,0"><TextBlock x:Name="StatusText" Margin="16,0" VerticalAlignment="Center" Text="Seleziona una porta oppure avvia il simulatore." Foreground="#677A90" TextTrimming="CharacterEllipsis"/></Border>
+ </Grid>
+</Window>

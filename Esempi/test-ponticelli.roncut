@@ -1,0 +1,74 @@
+{
+  "Version": 1,
+  "SvgName": "test.svg",
+  "SvgText": "\u003C?xml version=\u00221.0\u0022 encoding=\u0022UTF-8\u0022?\u003E\n\u003Csvg xmlns=\u0022http://www.w3.org/2000/svg\u0022 xmlns:xlink=\u0022http://www.w3.org/1999/xlink\u0022 viewBox=\u00220 0 595.3 841.9\u0022\u003E\n  \u003Cdefs\u003E\n    \u003Cstyle\u003E\n      .cls-1{fill:#ffffff;stroke:#000000;stroke-miterlimit:10}\n    \u003C/style\u003E\n  \u003C/defs\u003E\n  \u003Ctitle\u003Etest\u003C/title\u003E\n  \u003Cg id=\u0022Layer_1\u0022 data-name=\u0022Layer 1\u0022\u003E\n    \u003Crect x=\u0022121.4\u0022 y=\u002275\u0022 width=\u0022141.7\u0022 height=\u0022170.1\u0022 class=\u0022cls-1\u0022/\u003E\n  \u003C/g\u003E\n\u003C/svg\u003E\n",
+  "SvgUnitMm": 0.35277777777777775,
+  "Contours": [
+    {
+      "Id": "c0",
+      "Closed": true,
+      "Points": [
+        {
+          "X": 42.82722473144531,
+          "Y": 26.45833396911621
+        },
+        {
+          "X": 92.81583404541016,
+          "Y": 26.45833396911621
+        },
+        {
+          "X": 92.81583404541016,
+          "Y": 86.46583557128906
+        },
+        {
+          "X": 42.82722473144531,
+          "Y": 86.46583557128906
+        }
+      ]
+    }
+  ],
+  "Operations": [
+    {
+      "Id": "b62d8efcfa134108abe9c581e5207194",
+      "ContourId": "c0",
+      "Kind": "Taglio esterno",
+      "Depth": 18,
+      "TabLength": 2,
+      "TabHeight": 9,
+      "Tabs": [
+        {
+          "X": 67.82152938842773,
+          "Y": 24.95833396911621
+        },
+        {
+          "X": 41.32722473144531,
+          "Y": 56.46208477020264
+        },
+        {
+          "X": 94.31583404541016,
+          "Y": 56.46208477020264
+        }
+      ]
+    }
+  ],
+  "Tool": {
+    "Name": "Fresa 3 mm",
+    "Diameter": 3,
+    "Flutes": 1
+  },
+  "Material": {
+    "Name": "Multistrato"
+  },
+  "Parameters": {
+    "StepDown": 2,
+    "FeedXY": 250,
+    "FeedZ": 60,
+    "SpindleRpm": 18000,
+    "StepOverPercent": 50
+  },
+  "ProfileConfirmed": true,
+  "ZeroX": 42.82722473144531,
+  "ZeroY": 86.46583557128906,
+  "SafeZ": 5,
+  "SpindleCommands": false
+}
