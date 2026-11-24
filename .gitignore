@@ -17,9 +17,10 @@
 /PASSAGGIO-CODEX.md
 /NOTE-RonCUT.md
 /AGENTS.md
+impostazioni-*.json
+utensili-supporti.json
 .env
 .env.*
-!.env.example
 *.pfx
 *.p12
 *.pem
@@ -31,9 +32,15 @@
 !/data/cerbiatto_cnc.svg
 !/data/RonCUT-icona-originale.png
 
-# Schermate storiche e G-code di riferimento restano sul PC.
-/Esempi/*.png
-/Esempi/*.nc
+# Pubblicare soltanto gli esempi già verificati.
+*.roncut
+*.nc
+*.gcode
+/Esempi/*
+!/Esempi/GA.svg
+!/Esempi/RonCUT-1.0.0-tasca-due-isole.roncut
+!/Esempi/RonCUT-v2-curva.roncut
+!/Esempi/test-ponticelli.roncut
 
 # File temporanei del sistema e degli editor.
 Thumbs.db
