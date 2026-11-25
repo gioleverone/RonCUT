@@ -23,7 +23,11 @@ Il progetto `.roncut` salva anche lo **SVG originale**, così puoi riaprire il l
 
 In **CUT** puoi simulare il programma, muovere gli assi a passo o in continuo con pulsanti o tastierino, scegliere i profili **Slow** e **Fast** e regolare avanzamento e mandrino. La vista dall'alto mantiene lo stesso orientamento del disegno. Le notifiche HTTP di avvio e fine sono facoltative. Il campo dell'URL parte vuoto e l'indirizzo che scegli viene salvato nelle impostazioni locali.
 
-In **Impostazioni generali** puoi selezionare la webcam della CNC e vederne subito l'anteprima. Dopo aver salvato, apri l'indirizzo MJPEG in un browser sulla stessa rete locale oppure impostalo in Motion con `netcam_url`. Puoi cambiare la porta HTTP, gli FPS e la qualità JPEG. La porta iniziale è 8554 e lo stream resta attivo finché RonCUT è aperto.
+## Webcam USB in diretta
+
+Seleziona una **webcam USB** in **Impostazioni → Impostazioni generali** per vedere subito l'anteprima. Dopo il salvataggio, RonCUT trasmette il video in **MJPEG su HTTP** mentre il programma è aperto, sia in DESIGN sia in CUT. Nelle impostazioni puoi modificare la porta HTTP, gli FPS e la qualità JPEG.
+
+Sulla stessa rete locale puoi aprire l'URL mostrato da RonCUT in un browser, usarlo nel tag HTML `<img>` o impostarlo in Motion con `netcam_url`. Con la porta iniziale 8554 l'indirizzo ha la forma `http://IP-DEL-PC:8554/stream`. Più dispositivi possono vedere il video contemporaneamente.
 
 ## ▶️ Prima prova, con il simulatore
 
