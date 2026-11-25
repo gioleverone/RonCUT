@@ -9,19 +9,21 @@ public sealed class GeneralSettingsWindow : Window
     private readonly TextBox _safeZ;
     private readonly TextBox _tabLength;
     private readonly TextBox _communicationsApiUrl;
+    private readonly WebcamSettingsPanel _webcam;
     public GeneralSettings Value { get; private set; }
+    internal Task WebcamReleased => _webcam.Released;
 
-    public GeneralSettingsWindow(GeneralSettings current)
+    public GeneralSettingsWindow(GeneralSettings current) : this(current, null)
     {
-        Value = new GeneralSettings
-        {
-            SafeZ = current.SafeZ,
-            TabLength = current.TabLength,
-            CommunicationsApiUrl = current.CommunicationsApiUrl
-        };
+    }
+
+    internal GeneralSettingsWindow(GeneralSettings current, WebcamSession? webcam)
+    {
+        Value = current.Copy();
         Title = "RonCUT — impostazioni generali";
         Width = 720;
-        Height = 490;
+        Height = 730;
+        MaxHeight = Math.Max(450, SystemParameters.WorkArea.Height - 24);
         ResizeMode = ResizeMode.NoResize;
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
@@ -92,6 +94,14 @@ public sealed class GeneralSettingsWindow : Window
         {
             Margin = new Thickness(0, 18, 0, 12)
         });
+        _webcam = new WebcamSettingsPanel(current, webcam);
+        panel.Children.Add(_webcam);
+        Loaded += (_, _) => _webcam.Start();
+        Closed += (_, _) => _webcam.Stop();
+        panel.Children.Add(new Separator
+        {
+            Margin = new Thickness(0, 18, 0, 12)
+        });
         _communicationsApiUrl = AddUrlField(panel, "URL API REST per comunicazioni", current.CommunicationsApiUrl);
         panel.Children.Add(new TextBlock
         {
@@ -150,6 +160,7 @@ public sealed class GeneralSettingsWindow : Window
             TabLength = Parse(_tabLength.Text, "Lunghezza ponticelli"),
             CommunicationsApiUrl = _communicationsApiUrl.Text.Trim()
         };
+        _webcam.ApplyTo(settings);
         settings.Validate();
         return settings;
     }

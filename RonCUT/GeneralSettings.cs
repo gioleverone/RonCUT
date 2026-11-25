@@ -8,6 +8,21 @@ public sealed class GeneralSettings
     public double SafeZ { get; set; } = 10;
     public double TabLength { get; set; } = 2;
     public string CommunicationsApiUrl { get; set; } = "";
+    public string WebcamId { get; set; } = "";
+    public string WebcamName { get; set; } = "";
+    public int WebcamHttpPort { get; set; } = WebcamMjpegServer.DefaultPort;
+    public int WebcamFps { get; set; } = WebcamStreamSettings.DefaultFps;
+    public int WebcamJpegQuality { get; set; } = WebcamStreamSettings.DefaultQuality;
+
+    internal WebcamStreamSettings? GetWebcamStream()
+    {
+        // A malformed webcam setting must not prevent opening or exporting a CNC project.
+        return !string.IsNullOrWhiteSpace(WebcamId) && WebcamStreamSettings.IsValid(WebcamHttpPort, WebcamFps, WebcamJpegQuality)
+            ? new WebcamStreamSettings(new WebcamDevice(WebcamId, WebcamName), WebcamHttpPort, WebcamFps, WebcamJpegQuality)
+            : null;
+    }
+
+    internal GeneralSettings Copy() => (GeneralSettings)MemberwiseClone();
 
     public void Validate()
     {

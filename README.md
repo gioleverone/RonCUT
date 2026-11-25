@@ -4,7 +4,7 @@
 
 RonCUT prepara lavorazioni CNC, genera G-code e permette di simulare il percorso o eseguirlo su una macchina con controller GRBL 1.1. Puoi partire da un disegno vettoriale, impostare utensile e profondità e vedere dove passerà la fresa prima di avviare il lavoro.
 
-**Versione 1.5.2** · Windows x64 · C# / WPF / .NET 8 · GPLv3
+**Versione 1.7.0** · Windows x64 · C# / WPF / .NET 8 · GPLv3
 
 ![CNC da banco tipo 3018, con telaio in alluminio e mandrino sopra il piano di lavoro](docs/immagini/cnc-3018.jpg)
 
@@ -23,6 +23,8 @@ Il progetto `.roncut` salva anche lo **SVG originale**, così puoi riaprire il l
 
 In **CUT** puoi simulare il programma, muovere gli assi a passo o in continuo con pulsanti o tastierino, scegliere i profili **Slow** e **Fast** e regolare avanzamento e mandrino. La vista dall'alto mantiene lo stesso orientamento del disegno. Le notifiche HTTP di avvio e fine sono facoltative. Il campo dell'URL parte vuoto e l'indirizzo che scegli viene salvato nelle impostazioni locali.
 
+In **Impostazioni generali** puoi selezionare la webcam della CNC e vederne subito l'anteprima. Dopo aver salvato, apri l'indirizzo MJPEG in un browser sulla stessa rete locale oppure impostalo in Motion con `netcam_url`. Puoi cambiare la porta HTTP, gli FPS e la qualità JPEG. La porta iniziale è 8554 e lo stream resta attivo finché RonCUT è aperto.
+
 ## ▶️ Prima prova, con il simulatore
 
 1. Avvia `RonCUT.exe` e in **DESIGN → File → Apri progetto** apri [l'esempio con ponticelli](Esempi/test-ponticelli.roncut).
@@ -36,7 +38,7 @@ Per importare un tuo SVG, scegliere la scala e creare le lavorazioni, consulta l
 
 **Le prove su macchina reale sono state fatte dall'autore soltanto sulla sua CNC 3018 con controller GRBL.** RonCUT è progettato per GRBL 1.1 via seriale. La compatibilità con altre macchine, schede o versioni del firmware resta da verificare.
 
-Le **252 verifiche automatiche** della versione 1.5.2 coprono, tra le altre cose, importazione SVG, percorsi, salvataggio dei progetti e collegamento simulato. Il simulatore aiuta a esaminare il percorso. Collisioni, limiti fisici, accelerazioni e comportamento del mandrino vanno verificati sulla macchina.
+Le verifiche automatiche coprono, tra le altre cose, importazione SVG, percorsi, salvataggio dei progetti, collegamento simulato e impostazioni della webcam. Il simulatore aiuta a esaminare il percorso. Collisioni, limiti fisici, accelerazioni e comportamento del mandrino vanno verificati sulla macchina.
 
 Prima di lavorare su una CNC reale controlla unità, origine, fissaggio, ingombri, utensile, avanzamenti e quota Z di sicurezza. I valori degli esempi servono alla simulazione. **PAUSA può lasciare il mandrino acceso. Usa l'arresto fisico della macchina in caso di emergenza.**
 

@@ -1,4 +1,4 @@
-RONCUT 1.5.2
+RONCUT 1.7.0
 
 AVVIO
 Apri direttamente RonCUT.exe nella cartella principale, oppure il collegamento RonCUT nel menu Start. È un unico eseguibile autonomo per Windows x64: non occorre installare .NET o usare un BAT. Gli aggiornamenti sostituiscono sempre lo stesso RonCUT.exe, quindi il collegamento continua a indicare la versione corrente. Chiudi il programma prima di aggiornarlo. La vista DESIGN prepara le lavorazioni e genera il G-code; la vista CUT può simulare il percorso oppure collegarsi a una scheda GRBL 1.1.
@@ -67,6 +67,12 @@ I valori validi aggiornano subito il lavoro aperto e la sua anteprima. Un campo 
 IMPOSTAZIONI GENERALI E PASSATE
 Da Impostazioni > Impostazioni generali imposta Z di sicurezza e lunghezza dei ponticelli. I valori iniziali sono rispettivamente 10 mm e 2 mm. Sono salvati sul PC in %LOCALAPPDATA%\RonCUT\impostazioni-generali.json e valgono per tutti i progetti, anche quelli creati con versioni precedenti. I G-code già esportati non cambiano: per applicare nuove impostazioni occorre esportarli di nuovo.
 Per un unico contorno chiuso le passate consecutive avvengono senza tornare ogni volta alla Z di sicurezza; il percorso continua ad alzarsi sui ponticelli. Per spostarsi tra percorsi distinti o tornare all’inizio di un tracciato aperto la fresa risale alla Z di sicurezza.
+
+WEBCAM CNC
+Apri Impostazioni > Impostazioni generali. Il menu «Webcam CNC» parte da «Nessuna telecamera». Seleziona un dispositivo per vedere l’anteprima in diretta. Dopo aver collegato una webcam con questa finestra già aperta, premi Aggiorna per rileggerne l’elenco.
+Imposta porta HTTP, FPS e qualità JPEG e premi Salva impostazioni. I valori iniziali sono 8554, 10 FPS e qualità 75 su 100. Il frame rate effettivo dipende anche dalla webcam.
+Apri l'URL nella stessa rete locale, per esempio http://192.168.1.20:8554/stream. Puoi utilizzarlo anche come src di un tag HTML <img>. In Motion imposta netcam_url con lo stesso indirizzo. Il flusso MJPEG accetta più client e l'accesso dalla sottorete locale avviene senza credenziali.
+Lo stream resta attivo in DESIGN e in CUT mentre RonCUT è aperto. Per disattivarlo, seleziona «Nessuna telecamera» e salva.
 
 NOTIFICHE API REST
 In DESIGN apri Impostazioni > Impostazioni generali. Incolla un unico indirizzo HTTP o HTTPS in «URL API REST per comunicazioni», includendo i parametri della tua API come op e token. Il testo va a capo automaticamente. Premi Salva impostazioni. Se il campo è vuoto le notifiche sono disattivate.

@@ -24,6 +24,9 @@ public partial class MainWindow : Window
     private Job _job = new();
     private GeneralSettings _generalSettings = new GeneralSettings();
     private bool _generalSettingsUsable = true;
+    private WebcamStreamSettings? _webcamSettings;
+    private WebcamSession? _webcam;
+    private Task _webcamReleased = Task.CompletedTask;
     private Operation? _selected;
     private readonly HashSet<Operation> _selectedOperations = new HashSet<Operation>();
     private bool _depthMixed;
@@ -53,6 +56,7 @@ public partial class MainWindow : Window
         InitializeComponent();
         LoadLibrary();
         LoadGeneralSettings();
+        UpdateWebcam();
         _loading = true;
         SelectLibraryDefaults();
         RefreshCombos();
@@ -162,6 +166,7 @@ public partial class MainWindow : Window
         _generalSettingsUsable = true;
         _generalSettings.Apply(_job);
         UpdateGeneralSummary();
+        UpdateWebcam();
         StatusText.Text = "Impostazioni generali salvate per tutti i progetti.";
         Draw();
     }
@@ -171,11 +176,13 @@ public partial class MainWindow : Window
         try
         {
             SyncFields();
-            var dialog = new GeneralSettingsWindow(_generalSettings)
+            var dialog = new GeneralSettingsWindow(_generalSettings, _webcam)
             {
                 Owner = this
             };
-            if (dialog.ShowDialog() == true)
+            bool saved = dialog.ShowDialog() == true;
+            _webcamReleased = Task.WhenAll(_webcamReleased, dialog.WebcamReleased);
+            if (saved)
             {
                 ApplyGeneralSettings(dialog.Value);
             }
@@ -184,6 +191,36 @@ public partial class MainWindow : Window
         {
             Error(ex);
         }
+    }
+
+    private void UpdateWebcam()
+    {
+        var desired = _generalSettings.GetWebcamStream();
+        if (desired == _webcamSettings)
+        {
+            return;
+        }
+        StopWebcam();
+        _webcamSettings = desired;
+        if (desired != null)
+        {
+            _webcam = new WebcamSession(desired.Device, desired, _webcamReleased);
+        }
+    }
+
+    private void StopWebcam()
+    {
+        if (_webcam != null)
+        {
+            _webcamReleased = Task.WhenAll(_webcamReleased, _webcam.Stop());
+            _webcam = null;
+        }
+    }
+
+    protected override void OnClosed(EventArgs e)
+    {
+        StopWebcam();
+        base.OnClosed(e);
     }
 
     private void LoadLibrary()

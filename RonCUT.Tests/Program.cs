@@ -104,6 +104,7 @@ internal static class Program
         string examples = Path.Combine(Path.GetTempPath(), "RonCUT-tests-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(examples);
         TestGeneralSettings(examples);
+        WebcamMjpegTests.Run(Check).GetAwaiter().GetResult();
         var exampleJob = JsonSerializer.Deserialize<Job>(JsonSerializer.Serialize(job))!;
         new GeneralSettings().Apply(exampleJob);
         File.WriteAllText(Path.Combine(examples, "test-ponticelli-ANTEPRIMA.nc"), Cam.Generate(exampleJob));
@@ -347,6 +348,8 @@ internal static class Program
         File.WriteAllText(legacyPath, "{\"SafeZ\":10,\"TabLength\":2}");
         var legacySettings = GeneralSettings.Load(legacyPath);
         Check(legacySettings.CommunicationsApiUrl == "", "notifiche: compatibilità con le impostazioni 1.1.0");
+        Check(defaults.WebcamId == "" && legacySettings.GetWebcamStream() == null,
+            "webcam: disattivata nelle impostazioni nuove e precedenti");
         File.WriteAllText(legacyPath, "{\"SafeZ\":12,\"TabLength\":3,\"CutStartUrl\":\"https://example.invalid/start\",\"CutCompleteUrl\":\"https://example.invalid/fine\"}");
         legacySettings = GeneralSettings.Load(legacyPath);
         Check(legacySettings.SafeZ == 12 && legacySettings.TabLength == 3 && legacySettings.CommunicationsApiUrl == "",
@@ -359,6 +362,28 @@ internal static class Program
         File.WriteAllText(urlsPath, JsonSerializer.Serialize(urlSettings));
         var restoredUrls = GeneralSettings.Load(urlsPath);
         Check(restoredUrls.CommunicationsApiUrl == urlSettings.CommunicationsApiUrl, "notifiche: salvataggio e riapertura dell’URL unico con query completa");
+        urlSettings.WebcamId = "id-webcam-di-prova";
+        urlSettings.WebcamName = "Telecamera di prova";
+        urlSettings.WebcamHttpPort = 8765;
+        urlSettings.WebcamFps = 6;
+        urlSettings.WebcamJpegQuality = 90;
+        File.WriteAllText(urlsPath, JsonSerializer.Serialize(urlSettings));
+        var webcam = GeneralSettings.Load(urlsPath).GetWebcamStream();
+        Check(webcam is { Device.Id: "id-webcam-di-prova", Device.Name: "Telecamera di prova", Port: 8765, Fps: 6, Quality: 90 },
+            "webcam: dispositivo, porta HTTP, FPS e qualità JPEG conservati dopo il riavvio");
+        urlSettings.WebcamFps = 31;
+        Check(urlSettings.GetWebcamStream() == null && !WebcamStreamSettings.IsValid(8554, 10, 101) &&
+            !WebcamStreamSettings.IsValid(65536, 10, 75),
+            "webcam: porta HTTP, FPS e qualità JPEG fuori intervallo rifiutati");
+        File.WriteAllText(legacyPath, """
+            {"SafeZ":10,"TabLength":2,"WebcamId":"camera-salvata","WebcamName":"Webcam","WebcamUsername":"cnc","WebcamPassword":""}
+            """);
+        var migrated = GeneralSettings.Load(legacyPath);
+        Check(migrated.GetWebcamStream() is { Device.Id: "camera-salvata", Port: 8554, Fps: 10, Quality: 75 } &&
+            !JsonSerializer.Serialize(migrated).Contains("WebcamPassword", StringComparison.Ordinal),
+            "webcam: migrazione della telecamera salvata con i valori MJPEG iniziali");
+        Check(WebcamMjpegServer.MakeUrl(System.Net.IPAddress.Parse("192.168.1.20"), 8765) == "http://192.168.1.20:8765/stream",
+            "webcam: URL HTTP copiabile con la porta configurata");
         foreach (string invalidUrl in new[] { "non-un-url", "/relativo", "file:///C:/prova", "ftp://example.invalid/prova", "https://example.invalid/\r\nheader" })
         {
             bool invalidRejected = false;
@@ -649,6 +674,22 @@ internal static class Program
         var safeBox = (TextBox)typeof(GeneralSettingsWindow).GetField("_safeZ", flags)!.GetValue(generalWindow)!;
         var lengthBox = (TextBox)typeof(GeneralSettingsWindow).GetField("_tabLength", flags)!.GetValue(generalWindow)!;
         Check(safeBox.Text == "10" && lengthBox.Text == "2", "finestra impostazioni generali: valori iniziali visibili");
+        var webcamPanel = (WebcamSettingsPanel)typeof(GeneralSettingsWindow).GetField("_webcam", flags)!.GetValue(generalWindow)!;
+        var webcamDevices = (ComboBox)typeof(WebcamSettingsPanel).GetField("_devices", flags)!.GetValue(webcamPanel)!;
+        var webcamPort = (TextBox)typeof(WebcamSettingsPanel).GetField("_httpPort", flags)!.GetValue(webcamPanel)!;
+        var webcamFps = (TextBox)typeof(WebcamSettingsPanel).GetField("_fps", flags)!.GetValue(webcamPanel)!;
+        var webcamQuality = (TextBox)typeof(WebcamSettingsPanel).GetField("_jpegQuality", flags)!.GetValue(webcamPanel)!;
+        var webcamUrlBox = (TextBox)typeof(WebcamSettingsPanel).GetField("_url", flags)!.GetValue(webcamPanel)!;
+        double firstRow = webcamDevices.TranslatePoint(new Point(0, 0), webcamPanel).Y;
+        Check(webcamDevices.SelectedItem is WebcamDevice { Id: "", Name: "Nessuna telecamera" } &&
+            webcamPort is { IsEnabled: false, Text: "8554" } && webcamFps is { IsEnabled: false, Text: "10" } &&
+            webcamQuality is { IsEnabled: false, Text: "75" } && webcamUrlBox is { IsReadOnly: true, Text: "" },
+            "interfaccia webcam: nessuna telecamera selezionata al primo avvio e nessun URL");
+        Check(webcamPort.TranslatePoint(new Point(0, 0), webcamPanel).Y == firstRow &&
+            webcamFps.TranslatePoint(new Point(0, 0), webcamPanel).Y == firstRow &&
+            webcamQuality.TranslatePoint(new Point(0, 0), webcamPanel).Y == firstRow &&
+            webcamUrlBox.TranslatePoint(new Point(0, 0), webcamPanel).Y > firstRow,
+            "interfaccia webcam: porta HTTP, FPS e qualità accanto alla selezione e URL sotto la riga");
         var apiUrlBox = (TextBox)typeof(GeneralSettingsWindow).GetField("_communicationsApiUrl", flags)!.GetValue(generalWindow)!;
         apiUrlBox.Text = " http://example.invalid/api/telegram/?op=send&token=" + new string('a', 180) + " ";
         generalWindow.UpdateLayout();
